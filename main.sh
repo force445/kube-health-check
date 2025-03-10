@@ -87,14 +87,20 @@ restart_k3s() {
     fi
 }
 
+inspect_kube_config() {
+  echo "Inspecting kube config..."
+  cat /etc/rancher/k3s/k3s.yaml
+}
+
 show_menu() {
     clear
     display_header
     echo "MAIN MENU:"
     echo "----------------------------------------"
-    echo "[1] Monitor K3s service status"
-    echo "[2] Monitor logs"
-    echo "[3] Restart K3s"
+    echo "[1] Monitor K3s service status ✅"
+    echo "[2] Monitor logs 📜 📝"
+    echo "[3] Restart K3s 🔄"
+    echo "[4] Inspect the kube config 📜"
     echo "[99] Exit"
     echo "----------------------------------------"
     read -p "Enter your choice: " choice
@@ -103,6 +109,7 @@ show_menu() {
       1) monitor_status ;;
       2) monitoring_logs ;;
       3) restart_k3s ;;
+      4) inspect_kube_config;;
       99) echo "Exiting..."; exit 0 ;;
       *) echo "Invalid choice, please try again." ;;
     esac
