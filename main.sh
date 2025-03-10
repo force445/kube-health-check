@@ -95,7 +95,6 @@ show_menu() {
     echo "[1] Monitor K3s service status"
     echo "[2] Monitor logs"
     echo "[3] Restart K3s"
-    echo "[4] Export logs"
     echo "[99] Exit"
     echo "----------------------------------------"
     read -p "Enter your choice: " choice
