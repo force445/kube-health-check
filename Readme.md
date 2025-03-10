@@ -35,9 +35,10 @@ TIME ZONE: Etc/UTC
 ========================================
 MAIN MENU:
 ----------------------------------------
-[1] Monitor K3s service status
-[2] Monitor logs
-[3] Restart K3s
+[1] Monitor K3s service status ✅
+[2] Monitor logs 📜 📝
+[3] Restart K3s 🔄
+[4] Inspect the kube config 📜
 [99] Exit
 ----------------------------------------
 Enter your choice: 
