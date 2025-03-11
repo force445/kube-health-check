@@ -1,11 +1,15 @@
 #!/bin/bash
 
-is_master_running() {
-    systemctl is-active --quiet k3s
+is_master() {
+    systemctl show -p ActiveState k3s 2>/dev/null | grep -q "ActiveState=active" && return 0
+    systemctl show -p ActiveState k3s 2>/dev/null | grep -q "ActiveState=activating" && return 0
+    return 1
 }
 
-is_agent_running() {
-    systemctl is-active --quiet k3s-agent
+is_agent() {
+    systemctl show -p ActiveState k3s-agent 2>/dev/null | grep -q "ActiveState=active" && return 0
+    systemctl show -p ActiveState k3s-agent 2>/dev/null | grep -q "ActiveState=activating" && return 0
+    return 1
 }
 
 display_header() {
@@ -18,12 +22,12 @@ display_header() {
 }
 
 monitor_status() {
-  if is_master_running; then
+  if is_master; then
   STATUS=$(systemctl status k3s | grep -E "Loaded:|Active:" | sed 's/^[ \t]*//')
     echo "K3s Master's status:"
     echo "$STATUS"
   
-  elif is_agent_running; then 
+  elif is_agent; then 
   STATUS=$(systemctl status k3s-agent | grep -E "Loaded:|Active:" | sed 's/^[ \t]*//')
     echo "K3s Master's status:"
     echo "$STATUS"
@@ -36,11 +40,11 @@ monitor_status() {
 
 monitoring_logs() {
   trap 'echo -e "\nExiting log monitoring... Returning to menu."; return' SIGINT
-  if is_master_running; then
+  if is_master; then
   echo "Monitoring master's logs"
   journalctl -fu k3s.service
 
-  elif is_agent_running; then
+  elif is_agent; then
   echo "Monitoring agent's logs"
   journalctl -fu k3s-agent.service
   fi
@@ -52,12 +56,12 @@ restart_k3s() {
   ELAPSED=0
   SLEEP_INTERVAL=10
 
-  if is_master_running; then
+  if is_master; then
     echo "Restarting K3s master..."
     systemctl restart k3s.service
 
 
-    while ! is_master_running; do
+    while ! is_master; do
         if [ "$ELAPSED" -ge "$TIMEOUT" ]; then
             echo "Restart process is stuck! Please check K3s logs: journalctl -u k3s -n 50"
             exit 1
@@ -70,13 +74,13 @@ restart_k3s() {
     
     echo "K3s master restarted successfully! 🎉"
 
-  elif is_agent_running; then
+  elif is_agent; then
         echo "Restarting K3s agent..."
         systemctl restart k3s-agent.service
 
         ELAPSED=0
 
-        while ! is_agent_running; do
+        while ! is_agent; do
             if [ "$ELAPSED" -ge "$TIMEOUT" ]; then
                 echo "Restart process is stuck! Please check K3s logs: journalctl -u k3s-agent -n 50"
                 exit 1
