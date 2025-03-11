@@ -100,7 +100,7 @@ restart_k3s() {
 
 inspect_kube_config() {
   echo "Inspecting kube config..."
-  cat /etc/rancher/k3s/k3s.yaml
+  sudo cat /etc/rancher/k3s/k3s.yaml
 }
 
 show_menu() {
