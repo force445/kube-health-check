@@ -1,0 +1,28 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kube-health-check
+  labels:
+    app: kube-health-check
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: kube-health-check
+  template:
+    metadata:
+      labels:
+        app: kube-health-check
+    spec:
+      securityContext: {}
+      containers:
+        - name: {{ .Chart.Name }}
+          securityContext:
+            runAsUser: 0
+          image: "{{ .Values.deployment.repository }}:{{ .Values.deployment.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: Always
+          ports:
+            - name: http
+              containerPort: 5342
+              protocol: TCP
+          resources: {}

@@ -1,0 +1,3 @@
+deployment:
+  repository: force445/kube-health-check
+  tag: latest
